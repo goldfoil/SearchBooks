@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+var debug = require('debug')('sockets');
+var app = require('../app');
+var socketio = require('../routes/socketio');
+
+app.set('port', process.env.PORT || 3000);
+
+socketio();

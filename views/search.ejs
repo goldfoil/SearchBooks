@@ -17,6 +17,9 @@
     <!-- Custom CSS -->
     <link href="css/scrolling-nav.css" rel="stylesheet">
 
+    <!-- cb-materialbtn.css -->
+    <link href="https://cdn.rawgit.com/maechabin/bootstrap-material-button-color/master/dist/cb-materialbtn.0.5.5.min.css" ref="stylesheet">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -40,7 +43,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Start Bootstrap</a>
+                <a class="navbar-brand page-scroll" href="#page-top">書籍一括検索</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -51,14 +54,14 @@
                         <a class="page-scroll" href="#page-top"></a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" href="#search">検索</a>
                     </li>
-                    <li>
-                        <a class="page-scroll" href="#services">Services</a>
+                    <li id="search-result-li" class="hidden">
+                        <a class="page-scroll" href="#search-result">検索結果</a>
                     </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
+                    <!--<li>-->
+                    <!--    <a class="page-scroll" href="#contact">Contact</a>-->
+                    <!--</li>-->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -71,46 +74,74 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Scrolling Nav</h1>
-                    <p><strong>Usage Instructions:</strong> Make sure to include the <code>scrolling-nav.js</code>, <code>jquery.easing.min.js</code>, and <code>scrolling-nav.css</code> files. To make a link smooth scroll to another section on the page, give the link the <code>.page-scroll</code> class and set the link target to a corresponding ID on the page.</p>
-                    <a class="btn btn-default page-scroll" href="#about">Click Me to Scroll Down!</a>
+                    <h1>書籍一括検索</h1>
+                    <p>ISBNでオンライン書店や図書館の在庫、蔵書が検索できます</p>
+                    <p>蔵書を検索する場合は住所を入力してください<br>例）石川県 or 石川県金沢市...</p>
+                    <a class="btn btn-default page-scroll btn-lg" href="#search">本を探してみる</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
+    <section id="search" class="about-section">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>About Section</h1>
-                </div>
-            </div>
+            <!--<div class="row">-->
+            <!--    <div class="col-lg-12">-->
+                    <form class="form-horizontal">
+                      <div class="form-group form-group-lg">
+                        <label class="col-lg-2 control-label" for="ISBN">ISBN</label>
+                        <div class="col-lg-10">
+                          <input class="form-control" type="text" id="ISBN" placeholder="ISBN">
+                        </div>
+                      </div>
+                      <div class="form-group form-group-lg">
+                        <label class="col-lg-2 control-label" for="address">住所</label>
+                        <div class="col-lg-10">
+                          <input class="form-control" type="text" id="address" placeholder="石川県 or 石川県金沢市 ...">
+                        </div>
+                      </div>
+                    <!--<a class="btn btn-primary page-scroll btn-lg" href="#search-result" id="search-button">検索</a>-->
+                    <button class="btn btn-primary btn-lg" type="button" id="search-button">検索</button>
+                    </form>
+                <!--</div>-->
+        <!--    </div>-->
         </div>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services-section">
+    <section id="search-result" class="services-section hidden">
         <div class="container">
             <div class="row">
+                <div class="col-lg-12"  id="book-cover">
+                    <img class="img-responsive"  style="margin: 0 auto;" src="">
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-12">
-                    <h1>Services Section</h1>
+                    <dl class="dl-horizontal">
+                      <dt>タイトル</dt>
+                      <dd id="book-title"></dd>
+                      <dt>著者</dt>
+                      <dd id="book-author"></dd>
+                      <dt>出版社</dt>
+                      <dd id="book-publisher"></dd>
+                    </dl>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Contact Section</h1>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!--<section id="contact" class="contact-section">-->
+    <!--    <div class="container">-->
+    <!--        <div class="row">-->
+    <!--            <div class="col-lg-12">-->
+    <!--                <h1>Contact Section</h1>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</section>-->
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
@@ -121,7 +152,9 @@
     <!-- Scrolling Nav JavaScript -->
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/scrolling-nav.js"></script>
-
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/search.js"></script>
 </body>
 
 </html>

@@ -18,7 +18,7 @@
     <link href="css/scrolling-nav.css" rel="stylesheet">
 
     <!-- cb-materialbtn.css -->
-    <link href="https://cdn.rawgit.com/maechabin/bootstrap-material-button-color/master/dist/cb-materialbtn.0.5.5.min.css" ref="stylesheet">
+    <!--<link href="https://cdn.rawgit.com/maechabin/bootstrap-material-button-color/master/dist/cb-materialbtn.0.5.5.min.css" ref="stylesheet">-->
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -84,41 +84,57 @@
     </section>
 
     <!-- About Section -->
+    <!--<section id="search" class="about-section">-->
+    <!--    <div class="container">-->
+    <!--        <form class="form-horizontal">-->
+    <!--          <div class="form-group form-group-lg">-->
+    <!--            <label class="col-sm-2 control-label" for="ISBN">ISBN</label>-->
+    <!--            <div class="col-sm-10">-->
+    <!--              <input class="form-control" type="text" id="ISBN" placeholder="ISBN">-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--          <div class="form-group form-group-lg">-->
+    <!--            <label class="col-sm-2 control-label" for="address">住所</label>-->
+    <!--            <div class="col-sm-10">-->
+    <!--              <input class="form-control" type="text" id="address" placeholder="石川県 or 石川県金沢市 ...">-->
+    <!--            </div>-->
+    <!--          </div>-->
+                <!--<a class="btn btn-primary page-scroll btn-lg" href="#search-result" id="search-button">検索</a>-->
+    <!--            <button class="btn btn-primary btn-lg" type="button" id="search-button">一括検索</button>-->
+    <!--        </form>-->
+    <!--    </div>-->
+    <!--</section>-->
+    
+    <!-- About Section -->
     <section id="search" class="about-section">
-        <div class="container">
-            <!--<div class="row">-->
-            <!--    <div class="col-lg-12">-->
-                    <form class="form-horizontal">
-                      <div class="form-group form-group-lg">
-                        <label class="col-lg-2 control-label" for="ISBN">ISBN</label>
-                        <div class="col-lg-10">
-                          <input class="form-control" type="text" id="ISBN" placeholder="ISBN">
-                        </div>
-                      </div>
-                      <div class="form-group form-group-lg">
-                        <label class="col-lg-2 control-label" for="address">住所</label>
-                        <div class="col-lg-10">
-                          <input class="form-control" type="text" id="address" placeholder="石川県 or 石川県金沢市 ...">
-                        </div>
-                      </div>
-                    <!--<a class="btn btn-primary page-scroll btn-lg" href="#search-result" id="search-button">検索</a>-->
-                    <button class="btn btn-primary btn-lg" type="button" id="search-button">検索</button>
-                    </form>
-                <!--</div>-->
-        <!--    </div>-->
+        <div class="container" id="search_view">
+            <form class="form-horizontal">
+              <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label" for="ISBN">ISBN</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="ISBN" v-model="ISBN" placeholder="ISBN">
+                </div>
+              </div>
+              <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label" for="address">住所</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="address" v-model="address" placeholder="石川県 or 石川県金沢市 ...">
+                </div>
+              </div>
+              <button class="btn btn-primary btn-lg" type="button" v-on:click="searchClickHandler">一括検索</button>
+            </form>
         </div>
     </section>
-
+    
     <!-- Services Section -->
     <section id="search-result" class="services-section hidden">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12"  id="book-cover">
-                    <img class="img-responsive"  style="margin: 0 auto;" src="">
+                <div class="col-sm-2"  id="book-cover">
+                    <!--<img class="img-responsive"  style="margin: 0 auto;" src="">-->
+                    <img class="img-responsive" src="">
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
+                <div class="col-sm-10">
                     <dl class="dl-horizontal">
                       <dt>タイトル</dt>
                       <dd id="book-title"></dd>
@@ -128,6 +144,32 @@
                       <dd id="book-publisher"></dd>
                     </dl>
                 </div>
+            </div>
+            <div class="alt-table-responsive">
+              <table class="table table-condensed" id="library">
+                <thead>
+                  <tr>
+                      <th>図書館名</th>
+                      <th>貸出状況</th>
+                      <th>予約</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in libraryList">
+                        <td>
+                            <a :href="item.url_pc">{{item.formal}}</a>
+                        </td>
+                        <td>
+                            {{item.lending_status}}
+                        </td>
+                        <td>
+                            <template  v-if="item.reserveurl">
+                            <a :href="item.reserveurl">予約する</a>
+                            </template>
+                        </td>
+                    </tr>
+                  </tbody>
+              </table>
             </div>
         </div>
     </section>
@@ -144,7 +186,7 @@
     <!--</section>-->
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -153,6 +195,9 @@
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/scrolling-nav.js"></script>
     
+    <!-- vue -->
+    <script src="js/vue.js"></script>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/search.js"></script>
 </body>

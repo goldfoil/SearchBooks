@@ -12,7 +12,15 @@ function socketio() {
 
   io.on('connection', function(socket) {
     socket.on('get systemid', function(msg) {
-      calil.library('石川', '', '', '', 'library result', socket);
+      calil.library(msg.pref, msg.city, msg.geocode, msg.limit, 'systemid result', socket);
+    });
+    socket.on('check library', function(msg) {
+      console.log(msg);
+      calil.checkLibrary(msg.isbn, msg.systemid, 'check library result', socket);
+    });
+    socket.on('check session', function(msg) {
+      console.log(msg);
+      calil.checkSession(msg.session, 'check session result', socket);
     });
     socket.on('get cover', function(msg) {
       openBD(msg.isbn, 'cover result', socket);

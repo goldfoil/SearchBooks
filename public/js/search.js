@@ -3,10 +3,27 @@
 // socket.io接続
 const socket = io.connect(location.origin);
 
+const noImage = 'img/m_e_others_501.png';
+
 let inputIsbn;
 let inputIsbn10;
+let inputAddress;
 let libraryListWork = [];
 let registeredLibrary = [];
+
+const libraryViewModelData = {
+  libraryList: [],
+  checkMsg: '検索中...',
+  // classObject: {
+    isHidden: true
+  // }
+};
+
+const bookViewModelData = {
+  data: {
+    cover: noImage
+  }
+};
 
 const searchViewModel = new Vue({
   el: '#search_view',
@@ -21,13 +38,23 @@ const searchViewModel = new Vue({
       // "this" here refers to the model
 
       if (!this.ISBN) {
-        // ISBNの入力がない場合、エラー
-        // 	if (!confirm('設定を保存します\nよろしいですか？')) {
-        return false;
-        // }
+        // ISBNの入力がない場合、終了
+          return false;
       }
 
+      inputIsbn = $.trim(this.ISBN).replace( /-/g , '');
+      const isbnWork = ISBN.parse(inputIsbn);
+      if (isbnWork == null) {
+        alert('ISBNが不正です');
+        return false;
+      }
+
+      libraryViewModelData.isHidden = true;
+      libraryViewModelData.checkMsg = '検索中...';
+      libraryViewModel.$forceUpdate();
+
       if (this.address) {
+        inputAddress = this.address;
         const addressArray = this.address.match(/(.+?[都道府県])*(.+?[市区町村郡])*/);
         const addressJson = {};
 
@@ -37,10 +64,10 @@ const searchViewModel = new Vue({
         if (addressArray[2]) {
           addressJson.city = addressArray[2];
         }
+        
         socket.emit('get systemid', addressJson);
       }
 
-      inputIsbn = $.trim(this.ISBN).replace( /-/g , '');
       inputIsbn10 = ISBN.parse(inputIsbn);
       inputIsbn10 = inputIsbn10.asIsbn10();
       socket.emit('get cover', {
@@ -55,18 +82,10 @@ const searchViewModel = new Vue({
   }
 });
 
-const libraryViewModelData = {
-  libraryList: []
-};
-
 const libraryViewModel = new Vue({
   el: '#library',
-  data: libraryViewModelData
+  data: libraryViewModelData,
 });
-
-const bookViewModelData = {
-  data: {}
-}
 
 const bookViewModel = new Vue({
   el: '#book',
@@ -126,6 +145,10 @@ function checkSession(msg) {
         session: sessionId
       });
     }, 3000);
+  } else {
+    if(libraryViewModelData.checkMsg != '') {
+      libraryViewModelData.checkMsg = inputAddress + 'の図書館に蔵書が見つかりませんでした'
+    }
   }
 }
 
@@ -147,7 +170,9 @@ function checkStatus(msg) {
           data.reserveurl = checkLibraryResult['reserveurl'];
           libraryViewModelData.libraryList.push(data);
           registeredLibrary.push(data.systemid + data.libkey);
-          $('#library').removeClass('hidden');
+          // libraryViewModelData.classObject.isHidden = false;
+          libraryViewModelData.isHidden = false;
+          libraryViewModelData.checkMsg = '';
         }
         break;
     }
@@ -159,7 +184,6 @@ socket.on('cover result', function(msg) {
   console.log(msg);
 
    const noData = 'No Data';
-   const noImage = 'img/m_e_others_501.png';
 
   if (msg[0]) {
     const bookSummary = msg[0].summary;

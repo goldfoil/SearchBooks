@@ -39,12 +39,14 @@ const searchViewModel = new Vue({
 
       if (!this.ISBN) {
         // ISBNの入力がない場合、終了
+        // TODO:修正する
           return false;
       }
 
       inputIsbn = $.trim(this.ISBN).replace( /-/g , '');
       const isbnWork = ISBN.parse(inputIsbn);
       if (isbnWork == null) {
+        // TODO:修正する
         alert('ISBNが不正です');
         return false;
       }
@@ -147,6 +149,7 @@ function checkSession(msg) {
     }, 3000);
   } else {
     if(libraryViewModelData.checkMsg != '') {
+      libraryViewModelData.isHidden = false;
       libraryViewModelData.checkMsg = inputAddress + 'の図書館に蔵書が見つかりませんでした'
     }
   }

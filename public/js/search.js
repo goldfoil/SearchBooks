@@ -3,38 +3,98 @@
 // socket.io接続
 const socket = io.connect(location.origin);
 
-let inputIsbn = '';
-const libraryViewModelData = {libraryList: []};
+let inputIsbn;
+let inputIsbn10;
+let libraryListWork = [];
+let registeredLibrary = [];
+
+const searchViewModel = new Vue({
+  el: '#search_view',
+  data: {
+    ISBN: '403217010X',
+    address: '石川県金沢市'
+  },
+
+  // A click handler inside methods
+  methods: {
+    searchClickHandler: function(e) {
+      // "this" here refers to the model
+
+      if (!this.ISBN) {
+        // ISBNの入力がない場合、エラー
+        // 	if (!confirm('設定を保存します\nよろしいですか？')) {
+        return false;
+        // }
+      }
+
+      if (this.address) {
+        const addressArray = this.address.match(/(.+?[都道府県])*(.+?[市区町村郡])*/);
+        const addressJson = {};
+
+        if (addressArray[1]) {
+          addressJson.pref = addressArray[1];
+        }
+        if (addressArray[2]) {
+          addressJson.city = addressArray[2];
+        }
+        socket.emit('get systemid', addressJson);
+      }
+
+      inputIsbn = $.trim(this.ISBN).replace( /-/g , '');
+      inputIsbn10 = ISBN.parse(inputIsbn);
+      inputIsbn10 = inputIsbn10.asIsbn10();
+      socket.emit('get cover', {
+        isbn: inputIsbn
+      });
+
+      $('#search-result').removeClass('hidden');
+      $('#search-result-li').removeClass('hidden');
+
+      scroll('#search-result');
+    }
+  }
+});
+
+const libraryViewModelData = {
+  libraryList: []
+};
 
 const libraryViewModel = new Vue({
   el: '#library',
   data: libraryViewModelData
 });
 
-// 接続時
-socket.on('connect', function() {
-  // socket.emit('get cover');
-  //       socket.emit('get systemid');
-  //       socket.emit('get online stock');
+const bookViewModelData = {
+  data: {}
+}
+
+const bookViewModel = new Vue({
+  el: '#book',
+  data: bookViewModelData
 });
 
+// 接続時
+socket.on('connect', function() {});
+
 socket.on('systemid result', function(msg) {
-  console.log(msg);
-  console.log(libraryViewModel);
+  // console.log(msg);
+  // console.log(libraryViewModel);
 
   const systemids = [];
-  for (let data of msg) {
+  for (const data of msg) {
     const id = data.systemid;
     if (!systemids.includes(id)) {
       systemids.push(id);
     }
   }
-  
-  console.log(systemids);
 
-  libraryViewModelData.libraryList = msg;
+  // console.log(systemids);
+
+  registeredLibrary = [];
+  libraryViewModelData.libraryList = [];
   libraryViewModel.$forceUpdate();
-  
+  libraryListWork = msg;
+
   socket.emit('check library', {
     systemid: systemids.join(','),
     isbn: inputIsbn
@@ -58,105 +118,81 @@ socket.on('check session result', function(msg) {
   libraryViewModel.$forceUpdate();
 });
 
-function checkSession (msg) {
-  if(msg.continue == '1') {
+function checkSession(msg) {
+  if (msg.continue == '1') {
     const sessionId = msg.session;
-  	setTimeout( function() {
-      socket.emit('check session', {session: sessionId});
-  	}, 5000);
+    setTimeout(function() {
+      socket.emit('check session', {
+        session: sessionId
+      });
+    }, 3000);
   }
 }
 
 function checkStatus(msg) {
-    for (let data of libraryViewModelData.libraryList) {
+  for (const data of libraryListWork) {
 
     const checkLibraryResult = msg.books[inputIsbn][data.systemid];
 
-    if (!checkLibraryResult) {
+    if (registeredLibrary.includes(data.systemid + data.libkey)) {
+      // 蔵書の検索結果を保持している場合、次の結果へ
       continue;
     }
 
-    switch(checkLibraryResult['status']) {
+    switch (checkLibraryResult['status']) {
       case 'OK':
       case 'Cache':
-        // console.log('OK,Cache');
-        console.log(checkLibraryResult['libkey'][data.libkey]);
-        // console.log(checkLibraryResult['libkey']);
         data.lending_status = checkLibraryResult['libkey'][data.libkey];
-        if(!data.lending_status) {
-          data.lending_status = '蔵書なし';
-        } else {
+        if (data.lending_status) {
           data.reserveurl = checkLibraryResult['reserveurl'];
+          libraryViewModelData.libraryList.push(data);
+          registeredLibrary.push(data.systemid + data.libkey);
+          $('#library').removeClass('hidden');
         }
-        console.log(data.lending_status);
         break;
-      case 'Error':
-        break;
-    }
-    if (checkLibraryResult['status'] == 'Running') {
-      
     }
   }
 }
 
 socket.on('cover result', function(msg) {
 
-  const bookSummary = msg[0].summary;
-  console.log(bookSummary);
+  console.log(msg);
 
-  $('title').text('[' + bookSummary.title + ']の検索結果');
+   const noData = 'No Data';
+   const noImage = 'img/m_e_others_501.png';
 
-  $('#book-title').text(bookSummary.title);
-  $('#book-author').text(bookSummary.author);
-  $('#book-publisher').text(bookSummary.publisher);
-  $('#book-cover').children('img').attr('src', bookSummary.cover);
+  if (msg[0]) {
+    const bookSummary = msg[0].summary;
+    console.log(bookSummary);
 
+    $('title').text('[' + bookSummary.title + ']の検索結果');
+  
+    bookViewModelData.data = bookSummary;
+    
+    if(bookViewModelData.data.cover == '') {
+      bookViewModelData.data.cover = noImage;
+    }
+  } else {
+
+    $('title').text('[]の検索結果');
+
+     bookViewModelData.data = {
+        author: noData,
+        cover: noImage,
+        isbn: '',
+        pubdate: noData,
+        publisher: noData,
+        series: noData,
+        title: noData,
+        volume: noData        
+     }   
+  }
+
+  bookViewModel.$forceUpdate();
 });
 
 socket.on('online stock result', function(msg) {
   console.log(msg);
-});
-
-const searchViewModel = new Vue({
-  el: '#search_view',
-  data: {ISBN: ' 978-4797373141', address: '石川県金沢市'},
-
-  // A click handler inside methods
-  methods: {
-    searchClickHandler: function(e) {
-      // "this" here refers to the model
-
-      if (!this.ISBN) {
-        // ISBNの入力がない場合、エラー
-        // 	if (!confirm('設定を保存します\nよろしいですか？')) {
-        return false;
-        // }
-      }
-
-      if (this.address) {
-        const addressArray = this.address.match(/(.+?[都道府県])*(.+?[市区町村])*/);
-        const addressJson = {};
-
-        if (addressArray[1]) {
-          addressJson.pref = addressArray[1];
-        }
-        if (addressArray[2]) {
-          addressJson.city = addressArray[2];
-        }
-        socket.emit('get systemid', addressJson);
-      }
-
-      inputIsbn = $.trim(this.ISBN);
-      socket.emit('get cover', {
-        isbn: inputIsbn
-      });
-
-      $('#search-result').removeClass('hidden');
-      $('#search-result-li').removeClass('hidden');
-
-      scroll('#search-result');
-    }
-  }
 });
 
 // 切断時

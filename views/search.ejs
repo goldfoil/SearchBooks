@@ -84,28 +84,6 @@
     </section>
 
     <!-- About Section -->
-    <!--<section id="search" class="about-section">-->
-    <!--    <div class="container">-->
-    <!--        <form class="form-horizontal">-->
-    <!--          <div class="form-group form-group-lg">-->
-    <!--            <label class="col-sm-2 control-label" for="ISBN">ISBN</label>-->
-    <!--            <div class="col-sm-10">-->
-    <!--              <input class="form-control" type="text" id="ISBN" placeholder="ISBN">-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--          <div class="form-group form-group-lg">-->
-    <!--            <label class="col-sm-2 control-label" for="address">住所</label>-->
-    <!--            <div class="col-sm-10">-->
-    <!--              <input class="form-control" type="text" id="address" placeholder="石川県 or 石川県金沢市 ...">-->
-    <!--            </div>-->
-    <!--          </div>-->
-                <!--<a class="btn btn-primary page-scroll btn-lg" href="#search-result" id="search-button">検索</a>-->
-    <!--            <button class="btn btn-primary btn-lg" type="button" id="search-button">一括検索</button>-->
-    <!--        </form>-->
-    <!--    </div>-->
-    <!--</section>-->
-    
-    <!-- About Section -->
     <section id="search" class="about-section">
         <div class="container" id="search_view">
             <form class="form-horizontal">
@@ -128,25 +106,27 @@
     
     <!-- Services Section -->
     <section id="search-result" class="services-section hidden">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-2"  id="book-cover">
+        <div class="container text-left">
+            <h3>書籍情報</h3>
+            <div class="row" id="book">
+                <div class="col-sm-2">
                     <!--<img class="img-responsive"  style="margin: 0 auto;" src="">-->
-                    <img class="img-responsive" src="">
+                    <img class="img-responsive" v-bind:src="data.cover">
                 </div>
                 <div class="col-sm-10">
                     <dl class="dl-horizontal">
                       <dt>タイトル</dt>
-                      <dd id="book-title"></dd>
+                      <dd>{{data.title}}</dd>
                       <dt>著者</dt>
-                      <dd id="book-author"></dd>
+                      <dd>{{data.author}}</dd>
                       <dt>出版社</dt>
-                      <dd id="book-publisher"></dd>
+                      <dd>{{data.publisher}}</dd>
                     </dl>
                 </div>
             </div>
-            <div class="alt-table-responsive">
-              <table class="table table-condensed" id="library">
+            <h3>図書館蔵書</h3>
+            <div class="alt-table-responsive hidden" id="library">
+              <table class="table table-condensed">
                 <thead>
                   <tr>
                       <th>図書館名</th>
@@ -157,15 +137,14 @@
                 <tbody>
                     <tr v-for="item in libraryList">
                         <td>
-                            <a :href="item.url_pc">{{item.formal}}</a>
+                            <a v-bind:href="item.url_pc">{{item.formal}}</a>
+                            <!--<a href:"http://calil.jp/book/"{{item.url_pc}}>{{item.formal}}</a>-->
                         </td>
                         <td>
-                            {{item.lending_status}}
+                            <a class="btn btn-info btn-sm">{{item.lending_status}}</a>
                         </td>
                         <td>
-                            <template  v-if="item.reserveurl">
-                            <a :href="item.reserveurl">予約する</a>
-                            </template>
+                            <a v-bind:href="item.reserveurl">予約する</a>
                         </td>
                     </tr>
                   </tbody>
@@ -197,6 +176,9 @@
     
     <!-- vue -->
     <script src="js/vue.js"></script>
+    
+    <!-- isbn -->
+    <script src="js/isbn.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/search.js"></script>

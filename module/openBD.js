@@ -1,4 +1,3 @@
-const config = require('config');
 const rest = require('./rest.js');
 
 const openBDUrl = 'http://api.openbd.jp/v1/get';

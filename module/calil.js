@@ -1,4 +1,3 @@
-const config = require('config');
 const rest = require('./rest.js');
 
 const libraryUrl = 'http://api.calil.jp/library';
@@ -42,7 +41,7 @@ module.exports.checkLibrary = function(isbn, systemid, msg, socket) {
     parameters: {
       isbn: isbn,
       systemid: systemid,
-      appKey: config.get('calil.api_key'),
+      appKey: process.env.calil,
       format: 'json',
       callback: 'no'
     }
@@ -58,7 +57,7 @@ module.exports.checkSession = function(session, msg, socket) {
   const param = {
     parameters: {
       session: session,
-      appKey: config.get('calil.api_key'),
+      appKey: process.env.calil,
       format: 'json',
       callback: 'no'
     }

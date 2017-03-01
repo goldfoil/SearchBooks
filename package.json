@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev" : "nf ./bin/www" 
   },
   "dependencies": {
     "body-parser": "^1.16.1",
     "bootstrap": "^3.3.7",
-    "config": "^1.25.1",
     "cookie-parser": "^1.4.3",
     "debug": "^2.6.1",
     "ejs": "^2.5.6",
@@ -22,5 +22,8 @@
     "serve-favicon": "^2.4.0",
     "socket.io": "^1.7.3",
     "vue": "^2.2.0"
+  },
+  "devDependencies": {
+    "foreman": "^2.0.0"
   }
 }

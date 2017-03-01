@@ -1,4 +1,3 @@
-const config = require('config');
 const Client = require('node-rest-client').Client;
 const client = new Client();
 

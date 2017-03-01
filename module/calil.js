@@ -4,6 +4,7 @@ const rest = require('./rest.js');
 const libraryUrl = 'http://api.calil.jp/library';
 const checklibraryUrl = 'http://api.calil.jp/check';
 
+// 図書館のリスト取得
 module.exports.library = function(pref, city, geocode, limit, msg, socket) {
 
   const param = {
@@ -34,6 +35,7 @@ module.exports.library = function(pref, city, geocode, limit, msg, socket) {
 
 };
 
+// 図書館の蔵書取得
 module.exports.checkLibrary = function(isbn, systemid, msg, socket) {
 
   const param = {
@@ -50,6 +52,7 @@ module.exports.checkLibrary = function(isbn, systemid, msg, socket) {
 
 };
 
+// 図書館の蔵書取得(ポーリング)
 module.exports.checkSession = function(session, msg, socket) {
 
   const param = {

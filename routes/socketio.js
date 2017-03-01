@@ -12,17 +12,19 @@ function socketio() {
 
   io.on('connection', function(socket) {
     socket.on('get systemid', function(msg) {
+      // 図書館のリスト取得の場合
       calil.library(msg.pref, msg.city, msg.geocode, msg.limit, 'systemid result', socket);
     });
     socket.on('check library', function(msg) {
-      console.log(msg);
+      // 図書館の蔵書取得の場合
       calil.checkLibrary(msg.isbn, msg.systemid, 'check library result', socket);
     });
     socket.on('check session', function(msg) {
-      console.log(msg);
+      // 図書館の蔵書取得(ポーリング)の場合
       calil.checkSession(msg.session, 'check session result', socket);
     });
     socket.on('get cover', function(msg) {
+      // 書影取得の場合
       openBD(msg.isbn, 'cover result', socket);
     });
     socket.on('get online stock', function(msg) {});

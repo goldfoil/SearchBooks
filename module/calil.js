@@ -9,7 +9,7 @@ module.exports.library = function(pref, city, geocode, limit, msg, socket) {
 
   const param = {
     parameters: {
-      appKey: config.get('calil.api_key'),
+      appKey: process.env.calil,
       format: 'json',
       callback: ''
     }

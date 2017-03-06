@@ -3,8 +3,6 @@ const rest = require('./rest.js');
 const libraryUrl = 'http://api.calil.jp/library';
 const checklibraryUrl = 'http://api.calil.jp/check';
 
-console.log(process.env.calil);
-
 // 図書館のリスト取得
 module.exports.library = function(pref, city, geocode, limit, msg, socket) {
 

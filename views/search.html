@@ -138,11 +138,10 @@
                         <!-- TODO:修正する -->
                         <tr v-for="item in libraryList">
                             <td>
-                                <a v-bind:href="item.url_pc">{{item.formal}}</a>
-                                <!--<a href:"http://calil.jp/book/"{{item.url_pc}}>{{item.formal}}</a>-->
+                                <a v-bind:href="item.calilLibraryUrl">{{item.formal}}</a>
                             </td>
                             <td>
-                                <a class="btn btn-info btn-sm">{{item.lending_status}}</a>
+                                <a class="btn btn-info btn-sm" v-bind:href="item.calilBookLink">{{item.lending_status}}</a>
                             </td>
                             <td>
                                 <a class="btn btn-success btn-sm" v-bind:href="item.reserveurl">予約する</a>

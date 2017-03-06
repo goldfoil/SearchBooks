@@ -3,6 +3,8 @@
 // socket.io接続
 const socket = io.connect(location.origin);
 
+const calilBookUrl = 'http://calil.jp/book/';
+const calilLibraryUrl = 'http://calil.jp/library/';
 const noImage = 'img/m_e_others_501.png';
 
 let inputIsbn;
@@ -189,7 +191,11 @@ function checkStatus(msg) {
         data.lending_status = checkLibraryResult['libkey'][data.libkey];
         if (data.lending_status) {
           data.reserveurl = checkLibraryResult['reserveurl'];
+          // カーリルへのリンクを設定
+          data.calilBookLink = calilBookUrl + inputIsbn10 
+          data.calilLibraryUrl = calilLibraryUrl + data.libid + '/' + data.formalname;
           libraryViewModelData.libraryList.push(data);
+          // 検索済みの図書館を保持
           registeredLibrary.push(data.systemid + data.libkey);
           // 検索結果のリストを表示
           libraryViewModelData.isListHidden = false;

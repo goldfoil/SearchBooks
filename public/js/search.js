@@ -15,7 +15,8 @@ let registeredLibrary = [];
 const libraryViewModelData = {
   libraryList: [],
   checkMsg: '検索中...',
-  isHidden: true
+  isHidden: true,
+  isListHidden: true
 };
 
 // 書籍情報データ
@@ -59,6 +60,9 @@ const searchViewModel = new Vue({
 
       if (this.address) {
         // 住所が入力された場合
+        
+        // 住所が入力された場合、蔵書の検索中の表示をする
+        libraryViewModelData.isHidden = false;
 
         inputAddress = this.address;
         const addressArray = this.address.match(/(.+?[都道府県])*(.+?[市区町村郡])*/);
@@ -160,7 +164,6 @@ function checkSession(msg) {
 
     if (libraryViewModelData.checkMsg != '') {
       // 図書館に蔵書が1件もない場合
-      libraryViewModelData.isHidden = false;
       libraryViewModelData.checkMsg = inputAddress + 'の図書館に蔵書が見つかりませんでした'
     }
   }
@@ -189,7 +192,7 @@ function checkStatus(msg) {
           libraryViewModelData.libraryList.push(data);
           registeredLibrary.push(data.systemid + data.libkey);
           // 検索結果のリストを表示
-          libraryViewModelData.isHidden = false;
+          libraryViewModelData.isListHidden = false;
           libraryViewModelData.checkMsg = '';
         }
         break;

@@ -126,7 +126,7 @@
             <div class="alt-table-responsive" v-bind:class="{hidden: isHidden}" id="library">
                 <h3>図書館蔵書</h3>
                 <p>{{checkMsg}}</p>
-                <table class="table table-condensed table-striped">
+                <table class="table table-condensed table-striped"　v-bind:class="{hidden: isListHidden}">
                     <thead>
                         <tr>
                             <th>図書館名</th>

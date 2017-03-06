@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev" : "nf ./bin/www" 
+    "dev" : "nf start" 
   },
   "dependencies": {
     "body-parser": "^1.16.1",
